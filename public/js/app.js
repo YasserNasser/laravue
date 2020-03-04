@@ -2199,12 +2199,6 @@ __webpack_require__.r(__webpack_exports__);
     console.log('Component mounted.');
   },
   methods: {
-    getUserType: function getUserType() {
-      return this.form.type;
-    },
-    getUserName: function getUserName() {
-      return this.form.name;
-    },
     getUserPhoto: function getUserPhoto() {
       return this.form.photo.length > 100 ? this.form.photo : "img/profile/" + this.form.photo; //"img/profile/"+this.form.photo;
     },
@@ -2394,6 +2388,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2420,6 +2415,9 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     Uphoto: function Uphoto() {},
+    printme: function printme() {
+      window.print();
+    },
     updateUser: function updateUser() {
       var _this2 = this;
 
@@ -2512,7 +2510,14 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     var _this6 = this;
 
-    //console.log('Component mounted.')
+    Fire.$on('searching', function () {
+      var query = _this6.$parent.search;
+      axios.get('api/finduser?q=' + query).then(function (data) {
+        _this6.users = data.data; // console.log('fire on after');
+      })["catch"](function () {// console.log('fire on after33');
+      });
+    }); //console.log('Component mounted.')
+
     this.loadUsers();
     Fire.$on('AfterCreated', function () {
       _this6.loadUsers();
@@ -62429,11 +62434,11 @@ var render = function() {
             },
             [
               _c("h3", { staticClass: "widget-user-username text-right" }, [
-                _vm._v(_vm._s(_vm.getUserName()))
+                _vm._v(_vm._s(_vm._f("upText")(this.form.name)))
               ]),
               _vm._v(" "),
               _c("h5", { staticClass: "widget-user-desc text-right" }, [
-                _vm._v(_vm._s(_vm.getUserType()))
+                _vm._v(_vm._s(_vm._f("upText")(this.form.type)))
               ])
             ]
           ),
@@ -63198,6 +63203,18 @@ var render = function() {
                     },
                     [
                       _vm._v("Create User "),
+                      _c("i", { staticClass: "fa fa-user-plus fa-fw" })
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-print ",
+                      on: { click: _vm.printme }
+                    },
+                    [
+                      _vm._v("Print"),
                       _c("i", { staticClass: "fa fa-user-plus fa-fw" })
                     ]
                   )
@@ -79981,6 +79998,9 @@ var routes = [{
 }, {
   path: '/users',
   component: __webpack_require__(/*! ./components/Users.vue */ "./resources/js/components/Users.vue")["default"]
+}, {
+  path: '*',
+  component: __webpack_require__(/*! ./components/NotFound.vue */ "./resources/js/components/NotFound.vue")["default"]
 }];
 Vue.filter('upText', function (text) {
   return text.charAt(0).toUpperCase() + text.slice(1);
@@ -80011,7 +80031,15 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
 
 var app = new Vue({
   el: '#app',
-  router: router
+  router: router,
+  data: {
+    search: ''
+  },
+  methods: {
+    searchIt: _.debounce(function () {
+      Fire.$emit('searching');
+    }, 1200)
+  }
 });
 
 /***/ }),

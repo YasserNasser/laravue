@@ -18,8 +18,8 @@
                     <div class="card card-widget widget-user">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
                         <div class="widget-user-header text-white" style="background-image:url('img/cover.jpg')">
-                            <h3 class="widget-user-username text-right">{{getUserName()}}</h3>
-                            <h5 class="widget-user-desc text-right">{{getUserType()}}</h5>
+                            <h3 class="widget-user-username text-right">{{this.form.name | upText}}</h3>
+                            <h5 class="widget-user-desc text-right">{{this.form.type | upText}}</h5>
                         </div>
                         <div class="widget-user-image">
                             <img class="img-circle" :src="getUserPhoto()" alt="User Avatar">
@@ -361,13 +361,7 @@
             console.log('Component mounted.')
         },
         methods: {
-            getUserType(){
-                return this.form.type;
-            },
-            getUserName(){
 
-                return this.form.name;
-            },
             getUserPhoto(){
                 return (this.form.photo.length > 100) ? this.form.photo :"img/profile/"+this.form.photo ;
                 //"img/profile/"+this.form.photo;

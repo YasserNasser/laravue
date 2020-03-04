@@ -7,6 +7,7 @@
                     <h3 class="card-title">Users Table</h3>
                     <div class="card-tools">
                         <button class="btn btn-success " @click="createModal()">Create User <i class="fa fa-user-plus fa-fw"></i></button>
+                        <button class="btn btn-print " @click="printme">Print<i class="fa fa-user-plus fa-fw"></i></button>
                     </div>
 
                 </div>
@@ -148,6 +149,9 @@
             Uphoto(){
 
             },
+            printme(){
+                window.print();
+            },
             updateUser(){
                 this.$Progress.start()
               this.form.put('api/user/'+this.form.id)
@@ -237,6 +241,17 @@
           }
         },
         created() {
+            Fire.$on('searching',() =>{
+                let query = this.$parent.search;
+                axios.get('api/finduser?q=' + query)
+                    .then((data) => {
+                        this.users = data.data
+                        // console.log('fire on after');
+                    })
+                    .catch(() => {
+                       // console.log('fire on after33');
+                    });
+            });
             //console.log('Component mounted.')
             this.loadUsers();
             Fire.$on('AfterCreated',() =>{
